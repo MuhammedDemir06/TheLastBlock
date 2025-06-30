@@ -1,70 +1,276 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
+using System.Collections.Generic;
 
 public class LevelSaverEditor : EditorWindow
 {
     private Tilemap tilemap;
-    private bool showResetConfirm = false;
+    private LevelData levelToEdit;
+    private bool isEditMode = false;
+    private Dictionary<string, TileBase> tileLookup = new();
+
+    private bool showTraps;
+    private GameObject[] trapPrefabs;
+    private List<GameObject> spawnedTraps = new List<GameObject>();
 
     [MenuItem("Tools/Level Saver")]
     public static void ShowWindow()
     {
         GetWindow<LevelSaverEditor>("Level Saver");
     }
+    private void ShowTitle()
+    {
+        GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
+        titleStyle.alignment = TextAnchor.MiddleCenter;
+        titleStyle.fontSize = 25;
+        titleStyle.fontStyle = FontStyle.Bold;
+        titleStyle.normal.textColor = Color.white;
 
+        GUILayout.Space(10);
+        GUILayout.Label("Level Saver", titleStyle);
+        GUILayout.Space(10);
+    }
     private void OnGUI()
     {
-        GUILayout.Space(30);
-        GUILayout.Label("Tilemap Saver  ||  Attention:Drag Tilemap In Scene Here", EditorStyles.boldLabel);
+        ShowTitle();
+
+        GUILayout.Label("Tilemap Saver Panel", EditorStyles.boldLabel);
+
         tilemap = (Tilemap)EditorGUILayout.ObjectField("Tilemap", tilemap, typeof(Tilemap), true);
 
-        GUILayout.Space(30);
+        //Edit Mode
+        GUILayout.Space(10);
+        EditMode();
+        //Clear Button
+        GUILayout.Space(10);
+        ClearLevel();
+        //Trap Browser
+        EditorGUILayout.Space(20);
+        Traps();
+    }
+    //-----Editor Trap
+    private void Traps()
+    {
+        showTraps = EditorGUILayout.Foldout(showTraps, "Traps");
 
-        GUILayout.Label("Save", EditorStyles.boldLabel);
-        if (GUILayout.Button("Save Level"))
+        if (showTraps)
         {
-            SaveLevel();
-        }
+            GUILayout.Label("🧲 Drag traps into the scene", EditorStyles.boldLabel);
+            EditorGUILayout.Space(30);
 
-        GUILayout.Space(35);
-        GUILayout.Label("Reset", EditorStyles.boldLabel);
+            trapPrefabs = Resources.LoadAll<GameObject>("Traps");
 
-        if (!showResetConfirm)
-        {
-            if (GUILayout.Button("Reset Tiles"))
+            foreach (var trap in trapPrefabs)
             {
-                showResetConfirm = true;
+                GUILayout.BeginHorizontal();
+
+                Texture2D preview = AssetPreview.GetAssetPreview(trap);
+                if (preview == null) preview = AssetPreview.GetMiniThumbnail(trap);
+
+                GUILayout.Label(preview, GUILayout.Width(40), GUILayout.Height(40));
+                GUILayout.Label(trap.name);
+
+                DrawDraggablePrefab(trap);
+
+                GUILayout.EndHorizontal();
+            }
+        }
+    }
+    private void DrawDraggablePrefab(GameObject prefab)
+    {
+        Rect rect = GUILayoutUtility.GetRect(100, 40, GUILayout.ExpandWidth(true));
+        GUI.Box(rect, prefab.name);
+
+        // Drag handling
+        if (Event.current.type == EventType.MouseDown && rect.Contains(Event.current.mousePosition))
+        {
+            DragAndDrop.PrepareStartDrag();
+            DragAndDrop.objectReferences = new Object[] { prefab };
+            DragAndDrop.StartDrag("Dragging Trap");
+            Event.current.Use();
+        }
+    }
+    //---- Editor Load Level
+    private void EditMode()
+    {
+        isEditMode = EditorGUILayout.Toggle("Edit Existing Level", isEditMode);
+
+        if (isEditMode)
+        {
+            levelToEdit = (LevelData)EditorGUILayout.ObjectField("Level to Edit", levelToEdit, typeof(LevelData), false);
+
+            if (levelToEdit != null)
+            {
+                if (GUILayout.Button("Load Level"))
+                {
+                    LoadLevel(levelToEdit);
+                }
+
+                if (GUILayout.Button("Update Level"))
+                {
+                    UpdateLevel(levelToEdit);
+                }
             }
         }
         else
         {
-            EditorGUILayout.HelpBox("Are you sure you want to reset all tiles? This action cannot be undone.", MessageType.Warning);
-            GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Yes"))
+            if (GUILayout.Button("Save as New Level"))
             {
-                ResetTiles();
-                showResetConfirm = false;
+                SaveNewLevel();
             }
-            if (GUILayout.Button("No"))
-            {
-                showResetConfirm = false;
-            }
-            GUILayout.EndHorizontal();
         }
     }
-
-    private void SaveLevel()
+    private void UpdateLevel(LevelData level)
     {
-        if (tilemap == null)
+        level.Tiles.Clear();
+
+        level.Traps.Clear();
+
+        foreach (var pos in tilemap.cellBounds.allPositionsWithin)
         {
-            Debug.LogError("Tilemap field is empty!");
-            return;
+            if (tilemap.HasTile(pos))
+            {
+                TileBase tile = tilemap.GetTile(pos);
+                level.Tiles.Add(new TileInfo { Position = pos, TileName = tile.name });
+            }
         }
 
-        if (tilemap == null)
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+
+        foreach (var trap in allObjects)
         {
-            Debug.LogError("Tilemap area is empty!");
+            if (trap.tag == "Trap")
+            {
+                Vector2 trapPos = trap.transform.position;
+                GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(trap);
+
+                if (prefab != null)
+                {
+                    level.Traps.Add(new TrapInfo
+                    {
+                        TrapPosition = trapPos,
+                        TrapPrefab = prefab
+                    });
+                }
+                else
+                {
+                    Debug.LogWarning("Trap prefab source not Found: " + trap.name);
+                }
+            }
+        }
+
+        EditorUtility.SetDirty(level);
+        AssetDatabase.SaveAssets();
+
+        Debug.Log("Level updated.");
+    }
+    //private void LoadLevel(LevelData data)
+    //{
+    //    tileLookup.Clear();
+
+    //    TileBase[] allTiles = Resources.LoadAll<TileBase>("");
+    //    foreach (TileBase tile in allTiles)
+    //    {
+    //        if (!tileLookup.ContainsKey(tile.name))
+    //            tileLookup[tile.name] = tile;
+    //    }
+
+    //    tilemap.ClearAllTiles();
+
+    //    foreach (var tileInfo in data.Tiles)
+    //    {
+    //        if (tileLookup.TryGetValue(tileInfo.TileName, out TileBase tile))
+    //        {
+    //            tilemap.SetTile(tileInfo.Position, tile);
+    //        }
+    //        else
+    //        {
+    //            Debug.LogWarning($"Tile Not Found: {tileInfo.TileName}");
+    //        }
+    //    }
+
+
+    //    Debug.Log("Level loaded.");
+    //}
+    //---- Editor Clear Level
+    private void LoadLevel(LevelData data)
+    {
+        tileLookup.Clear();
+
+        TileBase[] allTiles = Resources.LoadAll<TileBase>("");
+        foreach (TileBase tile in allTiles)
+        {
+            if (!tileLookup.ContainsKey(tile.name))
+                tileLookup[tile.name] = tile;
+        }
+
+        tilemap.ClearAllTiles();
+
+        // Önce sahnedeki önceki tuzakları temizle
+        foreach (var trap in spawnedTraps)
+        {
+            if (trap != null)
+                Destroy(trap);
+        }
+        spawnedTraps.Clear();
+
+        // Tile'ları yükle
+        foreach (var tileInfo in data.Tiles)
+        {
+            if (tileLookup.TryGetValue(tileInfo.TileName, out TileBase tile))
+            {
+                tilemap.SetTile(tileInfo.Position, tile);
+            }
+            else
+            {
+                Debug.LogWarning($"Tile Not Found: {tileInfo.TileName}");
+            }
+        }
+
+        // Tuzakları yükle
+        foreach (var trapInfo in data.Traps)
+        {
+            if (trapInfo.TrapPrefab != null)
+            {
+                GameObject newTrap = Instantiate(trapInfo.TrapPrefab, (Vector3)trapInfo.TrapPosition, Quaternion.identity);
+                spawnedTraps.Add(newTrap);
+            }
+            else
+            {
+                Debug.LogWarning("Trap prefab is null in level data.");
+            }
+        }
+
+        Debug.Log("Level loaded.");
+    }
+    private void ClearLevel()
+    {
+        if(GUILayout.Button("Clear Tilemap"))
+        {
+            if (EditorUtility.DisplayDialog("Are you sure?", "This will clear the entire Tilemap.", "Yes", "Cancel"))
+            {
+                tilemap.ClearAllTiles();
+
+                GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+                foreach (var obj in allObjects)
+                {
+                    if (obj.CompareTag("Trap"))
+                    {
+                        DestroyImmediate(obj);
+                    }
+                }
+
+                Debug.Log("Cleared.");
+            }
+        }
+    }
+    //---- Editor Save Level
+    private void SaveNewLevel()
+    {
+        if (tilemap == null || tilemap.size.x < 3 || tilemap.size.y < 3)
+        {
+            Debug.LogError("Tilemap field is empty or too small!");
             return;
         }
 
@@ -74,40 +280,47 @@ public class LevelSaverEditor : EditorWindow
         {
             if (tilemap.HasTile(pos))
             {
-                Tile tile = tilemap.GetTile(pos) as Tile;
-                if (tile != null)
+                TileBase tile = tilemap.GetTile(pos);
+                newLevel.Tiles.Add(new TileInfo
                 {
-                    newLevel.tiles.Add(new TileInfo
+                    Position = pos,
+                    TileName = tile.name,
+                    TileColor = tilemap.GetColor(pos) // isteğe bağlı
+                });
+            }
+        }
+
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        foreach (var obj in allObjects)
+        {
+            if (obj.CompareTag("Trap"))
+            {
+                Vector2 trapPos = obj.transform.position;
+                GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(obj);
+
+                if (prefab != null)
+                {
+                    newLevel.Traps.Add(new TrapInfo
                     {
-                        Position = pos,
-                        TileName = tile.name,
-                        TileColor = tile.color
+                        TrapPosition = trapPos,
+                        TrapPrefab = prefab
                     });
+                }
+                else
+                {
+                    Debug.LogWarning("Trap prefab source not Found: " + obj.name);
                 }
             }
         }
 
-        string folderPath = "Assets/Resources/Levels/";
+        string folderPath = "Assets/Resources/Levels";
         if (!AssetDatabase.IsValidFolder(folderPath))
         {
             AssetDatabase.CreateFolder("Assets/Resources", "Levels");
         }
 
-        string path = AssetDatabase.GenerateUniqueAssetPath(folderPath + "TestLevel.asset");
+        string path = AssetDatabase.GenerateUniqueAssetPath(folderPath + "/Level_" + System.DateTime.Now.Ticks + ".asset");
         AssetDatabase.CreateAsset(newLevel, path);
         AssetDatabase.SaveAssets();
-    }
-
-    private void ResetTiles()
-    {
-        if (tilemap == null)
-        {
-            Debug.LogWarning("Tilemap field is empty, nothing to reset.");
-            return;
-        }
-
-        tilemap.ClearAllTiles();
-
-        Debug.Log("All tiles have been reset.");
     }
 }

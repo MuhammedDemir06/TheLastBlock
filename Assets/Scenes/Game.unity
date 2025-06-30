@@ -443,7 +443,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: -1.52, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -546,6 +546,7 @@ GameObject:
   - component: {fileID: 678989266}
   - component: {fileID: 678989265}
   - component: {fileID: 678989264}
+  - component: {fileID: 678989267}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -709,6 +710,18 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: -0.002847731, y: 0.017059386}
   m_Radius: 0.48009288
+--- !u!114 &678989267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 678989261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4de26b6c6f6ecf342b9d9eea55257fae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &736154518
 GameObject:
   m_ObjectHideFlags: 0
@@ -1004,7 +1017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemap: {fileID: 362986967}
-  levelData: {fileID: 11400000, guid: cbe41e49fc0a3f94bb1a45650e95bb65, type: 2}
+  levelData: {fileID: 11400000, guid: d180f5e95803faf4591c1ff1e131a7bd, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

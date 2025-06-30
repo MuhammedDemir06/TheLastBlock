@@ -19,12 +19,11 @@ public class LevelLoader : MonoBehaviour
 
         LoadLevel(levelData, tilemap , tileDict);
     }
-
     public void LoadLevel(LevelData levelData, Tilemap targetTilemap, Dictionary<string, TileBase> tileLookup)
     {
         targetTilemap.ClearAllTiles();
 
-        foreach (var tileInfo in levelData.tiles)
+        foreach (var tileInfo in levelData.Tiles)
         {
             if (tileLookup.TryGetValue(tileInfo.TileName, out TileBase tile))
             {
@@ -34,6 +33,11 @@ public class LevelLoader : MonoBehaviour
             {
                 Debug.LogWarning($"Tile Not Found: {tileInfo.TileName}");
             }
+        }
+
+        foreach(var trap in levelData.Traps)
+        {
+            Instantiate(trap.TrapPrefab, trap.TrapPosition, Quaternion.identity);
         }
     }
 }

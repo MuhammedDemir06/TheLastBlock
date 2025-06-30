@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(PlayerHealth))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
