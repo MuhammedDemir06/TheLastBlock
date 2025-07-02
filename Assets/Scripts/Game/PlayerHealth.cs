@@ -2,8 +2,17 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour,IDamageable
 {
-    public void Damage()
+    [Header("Player Health")]
+    [Range(1, 3)]
+    [SerializeField] private int playerHealthAmount = 3;
+    public void Damage(int damage)
     {
-        Debug.Log("Player Died!");
+        playerHealthAmount -= damage;
+        if (playerHealthAmount <= 0)
+        {
+            Debug.Log("Player Died!");
+        }
+        else
+            Debug.Log("Player Damaged");
     }
 }

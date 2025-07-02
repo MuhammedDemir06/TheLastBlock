@@ -2,7 +2,15 @@
 using UnityEditor;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
-
+using System.Net.Sockets;
+using UnityEditor.SceneManagement;
+using UnityEngine.Rendering.VirtualTexturing;
+public enum GameMode
+{
+    PC,
+    Mobile,
+    Console
+}
 public class LevelSaverEditor : EditorWindow
 {
     private Tilemap tilemap;
@@ -165,35 +173,6 @@ public class LevelSaverEditor : EditorWindow
 
         Debug.Log("Level updated.");
     }
-    //private void LoadLevel(LevelData data)
-    //{
-    //    tileLookup.Clear();
-
-    //    TileBase[] allTiles = Resources.LoadAll<TileBase>("");
-    //    foreach (TileBase tile in allTiles)
-    //    {
-    //        if (!tileLookup.ContainsKey(tile.name))
-    //            tileLookup[tile.name] = tile;
-    //    }
-
-    //    tilemap.ClearAllTiles();
-
-    //    foreach (var tileInfo in data.Tiles)
-    //    {
-    //        if (tileLookup.TryGetValue(tileInfo.TileName, out TileBase tile))
-    //        {
-    //            tilemap.SetTile(tileInfo.Position, tile);
-    //        }
-    //        else
-    //        {
-    //            Debug.LogWarning($"Tile Not Found: {tileInfo.TileName}");
-    //        }
-    //    }
-
-
-    //    Debug.Log("Level loaded.");
-    //}
-    //---- Editor Clear Level
     private void LoadLevel(LevelData data)
     {
         tileLookup.Clear();
@@ -207,7 +186,6 @@ public class LevelSaverEditor : EditorWindow
 
         tilemap.ClearAllTiles();
 
-        // Önce sahnedeki önceki tuzakları temizle
         foreach (var trap in spawnedTraps)
         {
             if (trap != null)
@@ -215,7 +193,6 @@ public class LevelSaverEditor : EditorWindow
         }
         spawnedTraps.Clear();
 
-        // Tile'ları yükle
         foreach (var tileInfo in data.Tiles)
         {
             if (tileLookup.TryGetValue(tileInfo.TileName, out TileBase tile))
@@ -228,7 +205,6 @@ public class LevelSaverEditor : EditorWindow
             }
         }
 
-        // Tuzakları yükle
         foreach (var trapInfo in data.Traps)
         {
             if (trapInfo.TrapPrefab != null)
