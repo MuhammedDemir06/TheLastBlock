@@ -14,10 +14,18 @@ public class TrapInfo
     public GameObject TrapPrefab;
     public Vector2 TrapPosition;
 }
+[System.Serializable]
+public class EnemyInfo
+{
+    public GameObject EnemyPrefab;
+    public Vector2 EnemyPos;
+}
 [CreateAssetMenu(fileName = "NewLevelData", menuName = "Level/Create New Level")]
 public class LevelData : ScriptableObject
 {
     public List<TileInfo> Tiles = new List<TileInfo>();
 
     public List<TrapInfo> Traps = new List<TrapInfo>();
+
+    public List<EnemyInfo> Enemies = new List<EnemyInfo>();
 }

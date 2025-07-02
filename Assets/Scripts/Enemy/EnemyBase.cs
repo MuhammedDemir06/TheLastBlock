@@ -3,19 +3,20 @@
 public class EnemyBase : MonoBehaviour
 {
     [Header("Enemy Stats")]
-    [Range(1, 10)]
-    [SerializeField] private float moveSpeed;
-    private Rigidbody2D rb;
+    [Space(5)]
+    [Header("Movement Settings")]
+    [Range(1,10)]
+    [SerializeField] protected float speed = 2f;
+    [Header("Enemy Direction")]
+    [Range(.5f,10)]
+    [SerializeField] protected float enemyDirSize = 5;
+
     protected virtual void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-    }
-    private void Move()
-    {
-        Debug.Log("Walking");
+        //Start
     }
     protected virtual void Update()
     {
-        Move();
+        //Update
     }
 }

@@ -39,5 +39,9 @@ public class LevelLoader : MonoBehaviour
         {
             Instantiate(trap.TrapPrefab, trap.TrapPosition, Quaternion.identity);
         }
+        foreach (var enemy in levelData.Enemies)
+        {
+            Instantiate(enemy.EnemyPrefab, enemy.EnemyPos, Quaternion.identity);
+        }
     }
 }
