@@ -9,23 +9,23 @@ public class TileInfo
     public Color TileColor;
 }
 [System.Serializable]
-public class TrapInfo
+public class ToolInfo
 {
-    public GameObject TrapPrefab;
-    public Vector2 TrapPosition;
+    public GameObject ToolPrefab;
+    public Vector2 ToolPosition;
 }
 [System.Serializable]
-public class EnemyInfo
+public class BackgroundInfo
 {
-    public GameObject EnemyPrefab;
-    public Vector2 EnemyPos;
+    public Sprite BackgroundSprite;
+
+    public Color PlayerBackgroundColor;
 }
-[CreateAssetMenu(fileName = "NewLevelData", menuName = "Level/Create New Level")]
 public class LevelData : ScriptableObject
 {
     public List<TileInfo> Tiles = new List<TileInfo>();
 
-    public List<TrapInfo> Traps = new List<TrapInfo>();
+    public List<ToolInfo> Tools = new List<ToolInfo>();
 
-    public List<EnemyInfo> Enemies = new List<EnemyInfo>();
+    public BackgroundInfo Background = new BackgroundInfo();
 }

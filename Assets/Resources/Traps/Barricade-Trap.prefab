@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4817812341477110720}
   - component: {fileID: 2994914469345096651}
   - component: {fileID: 3888688501109994139}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Barricade-Trap
   m_TagString: Trap
   m_Icon: {fileID: 0}
@@ -175,4 +175,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87dd448133ee5c54181deaff3c2fa159, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
+  damage: 3

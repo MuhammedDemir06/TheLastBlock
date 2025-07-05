@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Trap
   - Enemy
+  - Platform
+  - Background
+  - PlayerBackground
+  - PlayerStartPos
+  - NextLevel
   layers:
   - Default
   - TransparentFX

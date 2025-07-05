@@ -2,6 +2,9 @@
 using UnityEditor;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using System.Linq;
+using System.IO;
 public class LevelSaverEditor : EditorWindow
 {
     private Tilemap tilemap;
@@ -9,13 +12,28 @@ public class LevelSaverEditor : EditorWindow
     private bool isEditMode = false;
     private Dictionary<string, TileBase> tileLookup = new();
 
+    private Vector2 scrollPositionTools;
+
+    private string chapterName;
+
     private bool showTraps;
-    private GameObject[] trapPrefabs;
-    private List<GameObject> spawnedTraps = new List<GameObject>();
+    private GameObject[] toolPrefabs;
+    private List<GameObject> spawnedTools = new List<GameObject>();
 
     private bool showEnemies;
-    private GameObject[] enemyPrefabs;
-    private List<GameObject> spawnedEnemies = new List<GameObject>();
+
+    private bool showPlatforms;
+
+    private int lastLevel;
+
+    //Background
+    private Color playerBackgroundColor = new Color(173, 143, 102, 148);
+    private Sprite backgroundSprite;
+
+    private int startPosValue;
+    private int nextLevelValue;
+
+    private bool newChapter;
 
     [MenuItem("Tools/Level Saver")]
     public static void ShowWindow()
@@ -34,9 +52,16 @@ public class LevelSaverEditor : EditorWindow
         GUILayout.Label("Level Saver", titleStyle);
         GUILayout.Space(10);
     }
+    private void OnEnable()
+    {
+        lastLevel = EditorPrefs.GetInt("MyGame_LastLevel", 0);
+        chapterName = EditorPrefs.GetString("MyGame_LastChapterName");
+    }
     private void OnGUI()
     {
         ShowTitle();
+
+        scrollPositionTools = EditorGUILayout.BeginScrollView(scrollPositionTools, GUILayout.Height(800));
 
         GUILayout.Label("Tilemap Saver Panel", EditorStyles.boldLabel);
 
@@ -48,9 +73,13 @@ public class LevelSaverEditor : EditorWindow
         //Clear Button
         GUILayout.Space(10);
         ClearLevel();
+        //Reset Data
+        GUILayout.Space(10);
+        ResetData();
         //Tools
-        GUILayout.Space(20);
         Tools();
+
+        EditorGUILayout.EndScrollView();
     }
     //-----Editor Tools
     private void Tools()
@@ -65,6 +94,9 @@ public class LevelSaverEditor : EditorWindow
         GUILayout.Label("-Tools-", newStyle);
         GUILayout.Space(10);
 
+        GameBackground();
+
+        GUILayout.Space(10);
         GUILayout.Label("🧲 Drag traps into the scene", EditorStyles.boldLabel);
 
         //Trap Browser
@@ -73,6 +105,44 @@ public class LevelSaverEditor : EditorWindow
         //Enemy Browser
         EditorGUILayout.Space(20);
         Enemies();
+        //Platform Browser
+        Platforms();
+    }
+    //-----Editor Platform
+    private void Platforms()
+    {
+        showPlatforms = EditorGUILayout.Foldout(showPlatforms, "Platforms");
+
+        if (showPlatforms)
+        {
+            EditorGUILayout.Space(30);
+
+            toolPrefabs = Resources.LoadAll<GameObject>("Platforms");
+
+            foreach (var platform in toolPrefabs)
+            {
+                GUILayout.BeginHorizontal();
+
+                Texture2D preview = AssetPreview.GetAssetPreview(platform);
+                if (preview == null) preview = AssetPreview.GetMiniThumbnail(platform);
+
+                GUILayout.Label(preview, GUILayout.Width(40), GUILayout.Height(40));
+                GUILayout.Label(platform.name);
+
+                DrawDraggablePrefab(platform);
+
+                GUILayout.EndHorizontal();
+            }
+        }
+    }
+    //-----Editor Background
+    private void GameBackground()
+    {
+        GUILayout.Label("Background Sprite:", GUILayout.Width(150));
+        backgroundSprite = (Sprite)EditorGUILayout.ObjectField(backgroundSprite,typeof(Sprite),false,GUILayout.Width(50),GUILayout.Height(50));
+        EditorGUILayout.Space(20);
+        GUILayout.Label("Player Background Color:", GUILayout.Width(150));
+        playerBackgroundColor = EditorGUILayout.ColorField(playerBackgroundColor,GUILayout.Width(150), GUILayout.Height(30));
     }
     //-----Editor Enemies
     private void Enemies()
@@ -83,9 +153,9 @@ public class LevelSaverEditor : EditorWindow
         {
             EditorGUILayout.Space(30);
 
-            enemyPrefabs = Resources.LoadAll<GameObject>("Enemies");
+            toolPrefabs = Resources.LoadAll<GameObject>("Enemies");
 
-            foreach (var enemy in enemyPrefabs)
+            foreach (var enemy in toolPrefabs)
             {
                 GUILayout.BeginHorizontal();
 
@@ -110,9 +180,9 @@ public class LevelSaverEditor : EditorWindow
         {
             EditorGUILayout.Space(30);
 
-            trapPrefabs = Resources.LoadAll<GameObject>("Traps");
+            toolPrefabs = Resources.LoadAll<GameObject>("Traps");
 
-            foreach (var trap in trapPrefabs)
+            foreach (var trap in toolPrefabs)
             {
                 GUILayout.BeginHorizontal();
 
@@ -153,23 +223,79 @@ public class LevelSaverEditor : EditorWindow
 
             if (levelToEdit != null)
             {
+                GUILayout.Space(10);
                 if (GUILayout.Button("Load Level"))
                 {
                     LoadLevel(levelToEdit);
                 }
-
+                GUILayout.Space(10);
                 if (GUILayout.Button("Update Level"))
                 {
                     UpdateLevel(levelToEdit);
+                }
+                GUILayout.Space(10);
+                if (GUILayout.Button("Delete Level"))
+                {
+                    string path = AssetDatabase.GetAssetPath(levelToEdit);
+                    bool success = AssetDatabase.DeleteAsset(path);
+
+                    if (success)
+                    {
+                        Debug.Log("Deleted Level ");
+                        levelToEdit = null;
+                        GUI.FocusControl(null);
+                        ClearLevel();
+                    }
+                    else
+                    {
+                        Debug.LogError("Failed to delete level asset at: " + path);
+                    }
                 }
             }
         }
         else
         {
+            GUILayout.Label("An Existing Chapther Or New Chapter Name", EditorStyles.boldLabel);
+            chapterName = EditorGUILayout.TextField("Chapter Name:", chapterName);
             GUILayout.Space(10);
-            if (GUILayout.Button("Save as New Level"))
+
+            if (GUILayout.Button("Create Or Open New Chapter"))
             {
-                SaveNewLevel();
+                if (!string.IsNullOrEmpty(chapterName))
+                {
+                    string levelsRoot = "Assets/Resources/Levels";
+                    string newChapterPath = Path.Combine(levelsRoot, chapterName);
+
+                    if (!AssetDatabase.IsValidFolder(newChapterPath))
+                    {
+                        AssetDatabase.CreateFolder(levelsRoot, chapterName);
+
+                        EditorPrefs.SetString("MyGame_LastChapterName", chapterName);
+
+                        ResetLevelData();
+                        lastLevel = 0;
+                        Debug.Log("New chapter folder created: " + newChapterPath);
+                    }
+                    else
+                    {
+                        Debug.Log("Chapter folder already exists: " + newChapterPath);
+                    }
+
+                    newChapter = true;
+                }
+                else
+                {
+                    Debug.LogError("Please Fill Chapter Name Area");
+                }
+            }
+
+            if (newChapter)
+            {
+                GUILayout.Space(10);
+                if (GUILayout.Button("Save as New Level"))
+                {
+                    SaveNewLevel();
+                }
             }
         }
     }
@@ -177,9 +303,7 @@ public class LevelSaverEditor : EditorWindow
     {
         level.Tiles.Clear();
 
-        level.Traps.Clear();
-
-        level.Enemies.Clear();
+        level.Tools.Clear();
 
         foreach (var pos in tilemap.cellBounds.allPositionsWithin)
         {
@@ -190,53 +314,53 @@ public class LevelSaverEditor : EditorWindow
             }
         }
 
-        GameObject[] allTraps = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        GameObject[] allObj = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
 
-        foreach (var trap in allTraps)
+        startPosValue = 0;
+
+        foreach (var obj in allObj)
         {
-            if (trap.tag == "Trap")
+            if (obj.CompareTag("PlayerStartPos"))
             {
-                Vector2 trapPos = trap.transform.position;
-                GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(trap);
+                startPosValue += 1;
+            }
+            else if (obj.CompareTag("NextLevel"))
+            {
+                nextLevelValue += 1;
+            }
+        }
+        if (startPosValue != 1 || nextLevelValue != 1)
+        {
+            Debug.LogError("Scene must contain exactly one Player Start Position Or Player Next Level Position! Current Player Start Pos count: " + startPosValue + " Current Player Next Level Count: " + nextLevelValue);
+            return;
+        }
+
+        foreach (var obj in allObj)
+        {
+            //if (tool.tag == "Trap" || tool.tag == "Platform" || tool.tag == "Enemy" || tool.tag == "PlayerStartPos" ||tool.tag== "NextLevel")
+            if (obj.CompareTag("Trap") || obj.CompareTag("Enemy") || obj.CompareTag("Platform") || obj.CompareTag("PlayerStartPos") || obj.CompareTag("NextLevel"))
+            {
+                Vector2 trapPos = obj.transform.position;
+                GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(obj);
 
                 if (prefab != null)
                 {
-                    level.Traps.Add(new TrapInfo
+                    level.Tools.Add(new ToolInfo
                     {
-                        TrapPosition = trapPos,
-                        TrapPrefab = prefab
+                        ToolPosition = trapPos,
+                        ToolPrefab = prefab
                     });
                 }
                 else
                 {
-                    Debug.LogWarning("Trap prefab source not Found: " + trap.name);
+                    Debug.LogWarning("Trap prefab source not Found: " + obj.name);
                 }
             }
         }
+        level.Background = new BackgroundInfo();
 
-        GameObject[] allEnemies = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-
-        foreach (var enemy in allEnemies)
-        {
-            if (enemy.tag == "Enemy")
-            {
-                Vector2 trapPos = enemy.transform.position;
-                GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(enemy);
-
-                if (prefab != null)
-                {
-                    level.Enemies.Add(new EnemyInfo
-                    {
-                        EnemyPos = trapPos,
-                        EnemyPrefab = prefab,
-                    });
-                }
-                else
-                {
-                    Debug.LogWarning("Trap prefab source not Found: " + enemy.name);
-                }
-            }
-        }
+        level.Background.BackgroundSprite = backgroundSprite;
+        level.Background.PlayerBackgroundColor = playerBackgroundColor;
 
         EditorUtility.SetDirty(level);
         AssetDatabase.SaveAssets();
@@ -245,6 +369,12 @@ public class LevelSaverEditor : EditorWindow
     }
     private void LoadLevel(LevelData data)
     {
+        if (tilemap.size.x > 1 || tilemap.size.y > 1)
+        {
+            Debug.LogError("Tilemap field is Not Empty!");
+            return;
+        }
+
         tileLookup.Clear();
 
         TileBase[] allTiles = Resources.LoadAll<TileBase>("");
@@ -268,48 +398,45 @@ public class LevelSaverEditor : EditorWindow
             }
         }
         //Traps
-        foreach (var trap in spawnedTraps)
+        foreach (var tool in spawnedTools)
         {
-            if (trap != null)
-                Destroy(trap);
+            if (tool != null)
+                Destroy(tool);
         }
 
-        spawnedTraps.Clear();
+        spawnedTools.Clear();
 
-        foreach (var trapInfo in data.Traps)
+        foreach (var toolInfo in data.Tools)
         {
-            if (trapInfo.TrapPrefab != null)
+            if (toolInfo.ToolPrefab != null)
             {
-                GameObject newTrap = Instantiate(trapInfo.TrapPrefab, (Vector3)trapInfo.TrapPosition, Quaternion.identity);
-                spawnedTraps.Add(newTrap);
+                GameObject newTrap = (GameObject)PrefabUtility.InstantiatePrefab(toolInfo.ToolPrefab, SceneManager.GetActiveScene());
+                newTrap.transform.position = (Vector3)toolInfo.ToolPosition;
+                spawnedTools.Add(newTrap);
             }
             else
             {
                 Debug.LogWarning("Trap prefab is null in level data.");
             }
         }
-        //Enemy
-        foreach (var enemy in spawnedEnemies)
-        {
-            if (enemy != null)
-                Destroy(enemy);
-        }
 
-        spawnedEnemies.Clear();
-
-        foreach (var enemyInfo in data.Enemies)
-        {
-            if (enemyInfo.EnemyPrefab != null)
-            {
-                GameObject newTrap = Instantiate(enemyInfo.EnemyPrefab, (Vector3)enemyInfo.EnemyPos, Quaternion.identity);
-                spawnedTraps.Add(newTrap);
-            }
-            else
-            {
-                Debug.LogWarning("Trap prefab is null in level data.");
-            }
-        }
         Debug.Log("Level loaded.");
+
+        foreach (var obj in data.Tools)
+        {
+            if (obj.ToolPrefab.tag== "PlayerStartPos")
+            {
+                startPosValue += 1;
+            }
+            else if(obj.ToolPrefab.tag=="NextLevel")
+            {
+                nextLevelValue += 1;
+            }
+        }
+
+        if (startPosValue != 1 || nextLevelValue != 1)
+            Debug.LogError("Scene must contain exactly one Player Start Position Or Player Next Level Position! Current Player Start Pos count: " + startPosValue + " Current Player Next Level Count: " + nextLevelValue);
+
     }
     private void ClearLevel()
     {
@@ -331,10 +458,54 @@ public class LevelSaverEditor : EditorWindow
                     {
                         DestroyImmediate(obj);
                     }
+                    if (obj != null && obj.CompareTag("Platform"))
+                    {
+                        DestroyImmediate(obj);
+                    }
+                    if (obj != null && obj.CompareTag("PlayerStartPos"))
+                    {
+                        DestroyImmediate(obj);
+                    }
+                    if (obj != null && obj.CompareTag("NextLevel"))
+                    {
+                        DestroyImmediate(obj);
+                    }
                 }
                 Debug.Log("Cleared.");
             }
         }
+    }
+    //----Editor Reset
+    private void ResetData()
+    {
+        GUILayout.Space(20);
+
+        lastLevel = EditorGUILayout.IntField("Last Level", lastLevel);
+
+        GUILayout.Label("Advanced", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("🔁 Reset Last Level (EditorPrefs)", GUILayout.Height(25)))
+        {
+            if (EditorUtility.DisplayDialog(
+                "Reset Last Level Data?",
+                "This will reset the saved last level counter. Are you sure?",
+                "Yes, reset it",
+                "Cancel"))
+            {
+                ResetLevelData();
+                ResetChapterData();
+                Debug.Log("Last Level reset.");
+            }
+        }
+    }
+    private void ResetLevelData()
+    {
+        EditorPrefs.DeleteKey("MyGame_LastLevel");
+        lastLevel = 0;
+    }
+    private void ResetChapterData()
+    {
+        EditorPrefs.DeleteKey("MyGame_LastChapterName");
     }
     //---- Editor Save Level
     private void SaveNewLevel()
@@ -345,7 +516,7 @@ public class LevelSaverEditor : EditorWindow
             return;
         }
 
-        LevelData newLevel = ScriptableObject.CreateInstance<LevelData>();
+        LevelData newLevel = CreateInstance<LevelData>();
 
         foreach (var pos in tilemap.cellBounds.allPositionsWithin)
         {
@@ -356,7 +527,7 @@ public class LevelSaverEditor : EditorWindow
                 {
                     Position = pos,
                     TileName = tile.name,
-                    TileColor = tilemap.GetColor(pos) // isteğe bağlı
+                    TileColor = tilemap.GetColor(pos)
                 });
             }
         }
@@ -364,39 +535,51 @@ public class LevelSaverEditor : EditorWindow
         GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
         foreach (var obj in allObjects)
         {
-            if (obj.CompareTag("Trap"))
+            if (obj.CompareTag("Trap") || obj.CompareTag("Enemy") || obj.CompareTag("Platform") || obj.CompareTag("PlayerStartPos") || obj.CompareTag("NextLevel"))
             {
                 Vector2 trapPos = obj.transform.position;
                 GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(obj);
 
                 if (prefab != null)
                 {
-                    newLevel.Traps.Add(new TrapInfo
+                    newLevel.Tools.Add(new ToolInfo
                     {
-                        TrapPosition = trapPos,
-                        TrapPrefab = prefab
-                    });
-                }
-                else
-                    Debug.LogWarning("Trap prefab source not Found: " + obj.name);
-            }
-            else if(obj.CompareTag("Enemy"))
-            {
-                Vector2 trapPos = obj.transform.position;
-                GameObject prefab = PrefabUtility.GetCorrespondingObjectFromSource(obj);
-
-                if (prefab != null)
-                {
-                    newLevel.Enemies.Add(new EnemyInfo
-                    {
-                        EnemyPos = trapPos,
-                        EnemyPrefab = prefab
+                        ToolPosition = trapPos,
+                        ToolPrefab = prefab
                     });
                 }
                 else
                     Debug.LogWarning("Trap prefab source not Found: " + obj.name);
             }
         }
+
+        newLevel.Background = new BackgroundInfo();
+
+        newLevel.Background.BackgroundSprite = backgroundSprite;
+        newLevel.Background.PlayerBackgroundColor = playerBackgroundColor;
+
+        startPosValue = 0;
+
+        foreach (var obj in allObjects)
+        {
+            if (obj.CompareTag("PlayerStartPos"))
+            {
+                startPosValue += 1;
+            }
+            else if (obj.CompareTag("NextLevel"))
+            {
+                nextLevelValue += 1;
+            }
+        }
+
+        if (startPosValue != 1 || nextLevelValue != 1)
+        {
+            Debug.LogError("Scene must contain exactly one Player Start Position Or Player Next Level Position! Current Player Start Pos count: " + startPosValue + " Current Player Next Level Count: " + nextLevelValue);
+            return;
+        }
+
+        lastLevel += 1;
+        EditorPrefs.SetInt("MyGame_LastLevel", lastLevel);
 
         string folderPath = "Assets/Resources/Levels";
         if (!AssetDatabase.IsValidFolder(folderPath))
@@ -404,7 +587,7 @@ public class LevelSaverEditor : EditorWindow
             AssetDatabase.CreateFolder("Assets/Resources", "Levels");
         }
 
-        string path = AssetDatabase.GenerateUniqueAssetPath(folderPath + "/Level_" + System.DateTime.Now.Ticks + ".asset");
+        string path = AssetDatabase.GenerateUniqueAssetPath(folderPath + "/Level_" + lastLevel + ".asset");
         AssetDatabase.CreateAsset(newLevel, path);
         AssetDatabase.SaveAssets();
     }
