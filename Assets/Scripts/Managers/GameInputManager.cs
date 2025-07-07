@@ -4,6 +4,7 @@ public class GameInputManager : MonoBehaviour
 {
     public static System.Action<float> PlayerInputX;
     public static System.Action PlayerJump;
+    public static System.Action PlayerUIPause;
 
     [Header("Player")]
     public float InputX;
@@ -25,21 +26,34 @@ public class GameInputManager : MonoBehaviour
 
     private void EscapePerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
+        if (PlayerUIManager.Instance.GamePaused)
+            return;
+
         if (obj.ReadValueAsButton())
         {
-            Debug.Log("Pause Screen");
+            PlayerUIPause?.Invoke();
         }
     }
 
     private void JumpPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        if(obj.ReadValueAsButton())
+        if (PlayerUIManager.Instance.GamePaused)
+            return;
+
+        if (obj.ReadValueAsButton())
         {
             PlayerJump?.Invoke();
         }
     }
     private void SetInput()
     {
+        if (PlayerUIManager.Instance.GamePaused)
+        {
+            InputX = 0;
+            PlayerInputX?.Invoke(InputX);
+            return;
+        }
+
         //Input X
         InputX = gameInput.Player.Move.ReadValue<Vector2>().x;
         PlayerInputX?.Invoke(InputX);

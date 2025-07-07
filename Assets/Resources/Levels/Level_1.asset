@@ -13,26 +13,17 @@ MonoBehaviour:
   m_Name: Level_1
   m_EditorClassIdentifier: 
   Tiles:
-  - Position: {x: -12, y: -7, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -7, z: 0}
-    TileName: TX Tileset Ground_113
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -10, y: -7, z: 0}
-    TileName: TX Tileset Ground_113
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -9, y: -7, z: 0}
-    TileName: TX Tileset Ground_114
+    TileName: TX Tileset Ground_113
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -8, y: -7, z: 0}
-    TileName: TX Tileset Ground_114
+    TileName: TX Tileset Ground_113
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -7, y: -7, z: 0}
     TileName: TX Tileset Ground_114
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -6, y: -7, z: 0}
-    TileName: TX Tileset Ground_61
+    TileName: TX Tileset Ground_114
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -5, y: -7, z: 0}
     TileName: TX Tileset Ground_114
@@ -56,49 +47,31 @@ MonoBehaviour:
     TileName: TX Tileset Ground_114
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 2, y: -7, z: 0}
-    TileName: TX Tileset Ground_114
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 3, y: -7, z: 0}
-    TileName: TX Tileset Ground_114
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 4, y: -7, z: 0}
     TileName: TX Tileset Ground_41
     TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 3, y: -7, z: 0}
+    TileName: TX Tileset Ground_42
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 4, y: -7, z: 0}
+    TileName: TX Tileset Ground_42
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 5, y: -7, z: 0}
-    TileName: TX Tileset Ground_42
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 6, y: -7, z: 0}
-    TileName: TX Tileset Ground_42
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 7, y: -7, z: 0}
     TileName: TX Tileset Ground_43
     TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 6, y: -7, z: 0}
+    TileName: TX Tileset Ground_113
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 7, y: -7, z: 0}
+    TileName: TX Tileset Ground_113
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 8, y: -7, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -7, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -7, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -7, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: -6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -6, z: 0}
-    TileName: TX Tileset Ground_101
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -10, y: -6, z: 0}
-    TileName: TX Tileset Ground_101
+    TileName: TX Tileset Ground_114
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -9, y: -6, z: 0}
-    TileName: TX Tileset Ground_61
+    TileName: TX Tileset Ground_101
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -8, y: -6, z: 0}
-    TileName: TX Tileset Ground_102
+    TileName: TX Tileset Ground_101
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -7, y: -6, z: 0}
     TileName: TX Tileset Ground_102
@@ -122,271 +95,148 @@ MonoBehaviour:
     TileName: TX Tileset Ground_102
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 0, y: -6, z: 0}
-    TileName: TX Tileset Ground_61
+    TileName: TX Tileset Ground_102
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 1, y: -6, z: 0}
     TileName: TX Tileset Ground_102
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 2, y: -6, z: 0}
-    TileName: TX Tileset Ground_102
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 3, y: -6, z: 0}
-    TileName: TX Tileset Ground_102
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 4, y: -6, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 7, y: -6, z: 0}
+  - Position: {x: 5, y: -6, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 8, y: -6, z: 0}
+  - Position: {x: 6, y: -6, z: 0}
     TileName: TX Tileset Ground_101
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -6, z: 0}
-    TileName: TX Tileset Ground_93
+  - Position: {x: 7, y: -6, z: 0}
+    TileName: TX Tileset Ground_101
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: -5, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -5, z: 0}
-    TileName: TX Tileset Ground_41
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -10, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+  - Position: {x: 8, y: -6, z: 0}
+    TileName: TX Tileset Ground_102
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -9, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_41
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -8, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -7, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -6, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -5, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -4, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -3, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -2, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -1, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 0, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 1, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 2, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+    TileName: TX Tileset Ground_2
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 3, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
+  - Position: {x: 5, y: -5, z: 0}
+    TileName: TX Tileset Ground_149
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 4, y: -5, z: 0}
-    TileName: TX Tileset Ground_150
+  - Position: {x: 6, y: -5, z: 0}
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 7, y: -5, z: 0}
-    TileName: TX Tileset Ground_31
+    TileName: TX Tileset Ground_1
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 8, y: -5, z: 0}
-    TileName: TX Tileset Ground_42
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -5, z: 0}
     TileName: TX Tileset Ground_43
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -5, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -5, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: -4, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -4, z: 0}
+  - Position: {x: -9, y: -4, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -4, z: 0}
+  - Position: {x: 8, y: -4, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -4, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -4, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: -3, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -3, z: 0}
+  - Position: {x: -9, y: -3, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 1, y: -3, z: 0}
+  - Position: {x: -4, y: -3, z: 0}
     TileName: TX Tileset Ground_155
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 2, y: -3, z: 0}
+  - Position: {x: -3, y: -3, z: 0}
     TileName: TX Tileset Ground_156
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -3, z: 0}
+  - Position: {x: 8, y: -3, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -3, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -3, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: -2, z: 0}
-    TileName: TX Tileset Ground_61
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -2, z: 0}
+  - Position: {x: -9, y: -2, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -2, z: 0}
-    TileName: TX Tileset Ground_29
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -2, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -2, z: 0}
-    TileName: TX Tileset Ground_61
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: -1, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: -1, z: 0}
-    TileName: TX Tileset Ground_28
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: -1, z: 0}
-    TileName: TX Tileset Ground_29
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: -1, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: -1, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 0, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 0, z: 0}
-    TileName: TX Tileset Ground_28
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -3, y: 0, z: 0}
+  - Position: {x: 0, y: -2, z: 0}
     TileName: TX Tileset Ground_155
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -2, y: 0, z: 0}
+  - Position: {x: 1, y: -2, z: 0}
     TileName: TX Tileset Ground_156
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 8, y: -2, z: 0}
+    TileName: TX Tileset Ground_29
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: -9, y: -1, z: 0}
+    TileName: TX Tileset Ground_28
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 8, y: -1, z: 0}
+    TileName: TX Tileset Ground_29
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: -9, y: 0, z: 0}
+    TileName: TX Tileset Ground_28
+    TileColor: {r: 0, g: 0, b: 0, a: 0}
+  - Position: {x: 4, y: 0, z: 0}
+    TileName: TX Tileset Ground_155
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 5, y: 0, z: 0}
-    TileName: TX Tileset Ground_155
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 6, y: 0, z: 0}
     TileName: TX Tileset Ground_156
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 0, z: 0}
+  - Position: {x: 8, y: 0, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 0, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 0, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 1, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 1, z: 0}
+  - Position: {x: -9, y: 1, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 1, z: 0}
+  - Position: {x: 8, y: 1, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 1, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 1, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 2, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 2, z: 0}
+  - Position: {x: -9, y: 2, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -6, y: 2, z: 0}
-    TileName: TX Tileset Ground_155
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -5, y: 2, z: 0}
-    TileName: TX Tileset Ground_156
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 2, z: 0}
+  - Position: {x: 8, y: 2, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 2, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 2, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 3, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 3, z: 0}
+  - Position: {x: -9, y: 3, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 3, z: 0}
+  - Position: {x: 8, y: 3, z: 0}
     TileName: TX Tileset Ground_29
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 3, z: 0}
-    TileName: TX Tileset Ground_61
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 3, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 4, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 4, z: 0}
+  - Position: {x: -9, y: 4, z: 0}
     TileName: TX Tileset Ground_28
     TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 4, z: 0}
+  - Position: {x: 8, y: 4, z: 0}
     TileName: TX Tileset Ground_29
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 4, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 4, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 5, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 5, z: 0}
-    TileName: TX Tileset Ground_19
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -10, y: 5, z: 0}
-    TileName: TX Tileset Ground_20
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -9, y: 5, z: 0}
-    TileName: TX Tileset Ground_20
+    TileName: TX Tileset Ground_19
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: -8, y: 5, z: 0}
     TileName: TX Tileset Ground_20
@@ -437,96 +287,17 @@ MonoBehaviour:
     TileName: TX Tileset Ground_20
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   - Position: {x: 8, y: 5, z: 0}
-    TileName: TX Tileset Ground_20
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 5, z: 0}
     TileName: TX Tileset Ground_21
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 5, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 5, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -12, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -11, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -10, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -9, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -8, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -7, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -6, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -5, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -4, y: 6, z: 0}
-    TileName: TX Tileset Ground_61
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -3, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -2, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: -1, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 0, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 1, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 2, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 3, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 4, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 5, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 6, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 7, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 8, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 9, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 10, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
-    TileColor: {r: 0, g: 0, b: 0, a: 0}
-  - Position: {x: 11, y: 6, z: 0}
-    TileName: TX Tileset Ground_93
     TileColor: {r: 0, g: 0, b: 0, a: 0}
   Tools:
   - ToolPrefab: {fileID: 3790816854968525089, guid: 3b9a1e411fc606348ad36917183d0524, type: 3}
-    ToolPosition: {x: -8.515739, y: -3.4728763}
-  - ToolPrefab: {fileID: 2018365450437254144, guid: 1509360826d6bb34587310ad4949fdd5, type: 3}
-    ToolPosition: {x: -5.4490533, y: -4.06292}
+    ToolPosition: {x: -6.5, y: -3.5}
+  - ToolPrefab: {fileID: 8369383532742148377, guid: 5fd9ed34f1f755643b41c4b41d7077e5, type: 3}
+    ToolPosition: {x: -3.0614924, y: -2.1137767}
   - ToolPrefab: {fileID: 2183321564951531335, guid: 367acab6b4839d34f847dc791e026c4d, type: 3}
-    ToolPosition: {x: 5.991745, y: 0.98546815}
+    ToolPosition: {x: 5.0270786, y: 0.9610276}
+  - ToolPrefab: {fileID: 2043724467727623159, guid: 5adb0f5c1d65b794eb6d6a499b2624d1, type: 3}
+    ToolPosition: {x: 3.9471886, y: -6.1721287}
   Background:
     BackgroundSprite: {fileID: 21300000, guid: 4d9a634d60ac3974b9458e1a166f03d8, type: 2}
-    PlayerBackgroundColor: {r: 0.6784314, g: 0.56078434, b: 0.4, a: 0.5803922}
+    PlayerBackgroundColor: {r: 0.74901956, g: 0.6191318, b: 0.44161847, a: 0.6745098}

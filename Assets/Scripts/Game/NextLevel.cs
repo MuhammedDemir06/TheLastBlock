@@ -6,7 +6,7 @@ public class NextLevel : MonoBehaviour
     {
         if (PlayerUIManager.Instance != null)
         {
-            PlayerUIManager.Instance.GameFinished = true;
+            PlayerUIManager.Instance.NextLevel();
             Debug.Log("Level Finished");
         }
         else

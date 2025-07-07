@@ -1,8 +1,9 @@
+﻿using DG.Tweening;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(PlayerHealth))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour,SetablePlayerPos
 {
     [Header("Movement Settings")]
     [Range(.5f,10)][SerializeField] private float moveSpeed = 5f;
@@ -16,15 +17,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float playerSize = .5f;
     private Rigidbody2D rb;
 
+    //Last Pos
+    [HideInInspector] public Vector2 StartPos;
+    private Vector2 lastPos;
     private void OnEnable()
     {
         GameInputManager.PlayerInputX += Move;
         GameInputManager.PlayerJump += Jump;
+        PlayerHealth.DamageControl += KillEffect;
     }
     private void OnDisable()
     {
         GameInputManager.PlayerInputX -= Move;
         GameInputManager.PlayerJump -= Jump;
+        PlayerHealth.DamageControl -= KillEffect;
     }
     private void Start()
     {
@@ -57,5 +63,64 @@ public class PlayerController : MonoBehaviour
     public bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+    //public void KillEffect(int healthAmount,int damage,bool isDamage)
+    //{
+    //    if(healthAmount==0)
+    //    {
+    //        gameObject.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
+    //        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+    //        if (sr != null)
+    //            sr.DOFade(0f, 0.5f);
+    //    }
+    //    else
+    //    {
+    //        playerEffect.emitting = false;
+    //        rb.simulated = false;
+
+    //        Invoke(nameof(PlayerEffect), 1f);
+
+    //        if (lastPos.x != 0 && lastPos.y != 0)
+    //        {
+    //            transform.position = lastPos;
+    //        }
+    //        else
+    //        {
+    //            transform.localPosition = StartPos;
+    //        }
+    //    }
+    //}
+
+    public void KillEffect(int healthAmount, int damage, bool isDamage)
+    {
+        if (healthAmount == 0)
+        {
+            gameObject.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
+            SpriteRenderer sr = GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.DOFade(0f, 0.5f);
+        }
+        else
+        {
+           // playerEffect.emitting = false;
+            rb.simulated = false;
+
+           // Invoke(nameof(PlayerEffect), 1f);
+
+            Vector2 targetPos = (lastPos.x != 0 && lastPos.y != 0) ? lastPos : StartPos;
+
+            // Rigidbody physics bozulmasın diye önce simülasyonu kapat
+            transform.DOMove(targetPos, 0.5f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                {
+                    // Animasyon tamamlanınca Rigidbody tekrar aktif
+                    rb.simulated = true;
+                });
+        }
+    }
+    public void PlayerSetPos(float x, float y)
+    {
+        lastPos = new Vector2(x, y);
     }
 }

@@ -14,12 +14,28 @@ public class PlayerUIManager : MonoBehaviour
     [SerializeField] private Image[] playerHearts;
     [SerializeField] private Sprite activeHeartSprite;
     [SerializeField] private Sprite unactiveHeartSprite;
+    [Header("Pause Screen")]
+    [SerializeField] private AnimatedPanel pauseScreen;
+    [Header("Game Over Screen")]
+    [SerializeField] private AnimatedPanel gameOverScreen;
+    [Header("Next Level Screen")]
+    [SerializeField] private AnimatedPanel nextLevelScreen;
+    private void OnEnable()
+    {
+        GameInputManager.PlayerUIPause += PauseButton;
+        PlayerHealth.DamageControl += DamageControl;
+    }
+    private void OnDisable()
+    {
+        GameInputManager.PlayerUIPause -= PauseButton;
+        PlayerHealth.DamageControl -= DamageControl;
+    }
 
     private void Awake()
     {
         Instance = this;
     }
-    public void DamageControl(int playerHealthAmount,int value, bool isDamage)
+    private void DamageControl(int playerHealthAmount, int value, bool isDamage)
     {
         for (int i = 0; i < playerHearts.Length; i++)
         {
@@ -40,9 +56,32 @@ public class PlayerUIManager : MonoBehaviour
                 break;
         }
 
-        if(playerHealthAmount<=0)
+        if (playerHealthAmount <= 0)
         {
+            gameOverScreen.Show();
             Debug.Log("Player Died!");
         }
+    }
+
+    public void NextLevel()
+    {
+        GameFinished = true;
+        GamePaused = true;
+        nextLevelScreen.Show();
+    }
+    //Buttons
+    public void PauseButton()
+    {
+        pauseScreen.Show();
+        GamePaused = true;
+    }
+    public void ResumeButton()
+    {
+        pauseScreen.Hide();
+        GamePaused = false;
+    }
+    public void NextScene(string sceneName)
+    {
+        SceneTransitionManager.Instance.LoadScene(sceneName);
     }
 }

@@ -23,4 +23,22 @@ public class GameManager : MonoBehaviour
             Instantiate(sceneTransitionPrefab);
         }
     }
+
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Tools/Game/Delete Game Data")]
+    public static void DeleteGameData()
+    {
+        PlayerDataManager.DeleteData();
+    }
+    [UnityEditor.MenuItem("Tools/Game/How To Create Level ?")]
+    public static void OperTutorialURL()
+    {
+        Application.OpenURL("");
+    }
+    [UnityEditor.MenuItem("Tools/Game/The Last Block Gameplay ?")]
+    public static void OperGameplayURL()
+    {
+        Application.OpenURL("");
+    }
+#endif
 }

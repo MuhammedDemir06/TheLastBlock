@@ -17,6 +17,8 @@ public class EnemyBase : MonoBehaviour
     }
     protected virtual void Update()
     {
+        if (PlayerUIManager.Instance.GamePaused)
+            return;
         //Update
     }
 }

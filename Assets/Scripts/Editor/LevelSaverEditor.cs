@@ -27,6 +27,7 @@ public class LevelSaverEditor : EditorWindow
     private int lastLevel;
 
     //Background
+    private bool changeBackground;
     private Color playerBackgroundColor = new Color(173, 143, 102, 148);
     private Sprite backgroundSprite;
 
@@ -138,11 +139,16 @@ public class LevelSaverEditor : EditorWindow
     //-----Editor Background
     private void GameBackground()
     {
-        GUILayout.Label("Background Sprite:", GUILayout.Width(150));
-        backgroundSprite = (Sprite)EditorGUILayout.ObjectField(backgroundSprite,typeof(Sprite),false,GUILayout.Width(50),GUILayout.Height(50));
-        EditorGUILayout.Space(20);
-        GUILayout.Label("Player Background Color:", GUILayout.Width(150));
-        playerBackgroundColor = EditorGUILayout.ColorField(playerBackgroundColor,GUILayout.Width(150), GUILayout.Height(30));
+        changeBackground = EditorGUILayout.Toggle("Change Background", changeBackground);
+
+        if(changeBackground)
+        {
+            GUILayout.Label("Background Sprite:", GUILayout.Width(150));
+            backgroundSprite = (Sprite)EditorGUILayout.ObjectField(backgroundSprite, typeof(Sprite), false, GUILayout.Width(50), GUILayout.Height(50));
+            EditorGUILayout.Space(20);
+            GUILayout.Label("Player Background Color:", GUILayout.Width(150));
+            playerBackgroundColor = EditorGUILayout.ColorField(playerBackgroundColor, GUILayout.Width(150), GUILayout.Height(30));
+        }
     }
     //-----Editor Enemies
     private void Enemies()
@@ -301,6 +307,28 @@ public class LevelSaverEditor : EditorWindow
     }
     private void UpdateLevel(LevelData level)
     {
+        GameObject[] allObj = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+
+        startPosValue = 0;
+        nextLevelValue = 0;
+
+        foreach (var obj in allObj)
+        {
+            if (obj.gameObject.tag == "PlayerStartPos")
+            {
+                startPosValue += 1;
+            }
+            else if (obj.gameObject.tag == "NextLevel")
+            {
+                nextLevelValue += 1;
+            }
+        }
+        if (startPosValue != 1 || nextLevelValue != 1)
+        {
+            Debug.LogError("Scene must contain exactly one Player Start Position Or Player Next Level Position! Current Player Start Pos count: " + startPosValue + " Current Player Next Level Count: " + nextLevelValue);
+            return;
+        }
+
         level.Tiles.Clear();
 
         level.Tools.Clear();
@@ -314,30 +342,8 @@ public class LevelSaverEditor : EditorWindow
             }
         }
 
-        GameObject[] allObj = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-
-        startPosValue = 0;
-
         foreach (var obj in allObj)
         {
-            if (obj.CompareTag("PlayerStartPos"))
-            {
-                startPosValue += 1;
-            }
-            else if (obj.CompareTag("NextLevel"))
-            {
-                nextLevelValue += 1;
-            }
-        }
-        if (startPosValue != 1 || nextLevelValue != 1)
-        {
-            Debug.LogError("Scene must contain exactly one Player Start Position Or Player Next Level Position! Current Player Start Pos count: " + startPosValue + " Current Player Next Level Count: " + nextLevelValue);
-            return;
-        }
-
-        foreach (var obj in allObj)
-        {
-            //if (tool.tag == "Trap" || tool.tag == "Platform" || tool.tag == "Enemy" || tool.tag == "PlayerStartPos" ||tool.tag== "NextLevel")
             if (obj.CompareTag("Trap") || obj.CompareTag("Enemy") || obj.CompareTag("Platform") || obj.CompareTag("PlayerStartPos") || obj.CompareTag("NextLevel"))
             {
                 Vector2 trapPos = obj.transform.position;
@@ -359,8 +365,11 @@ public class LevelSaverEditor : EditorWindow
         }
         level.Background = new BackgroundInfo();
 
-        level.Background.BackgroundSprite = backgroundSprite;
-        level.Background.PlayerBackgroundColor = playerBackgroundColor;
+        if (changeBackground)
+        {
+            level.Background.BackgroundSprite = backgroundSprite;
+            level.Background.PlayerBackgroundColor = playerBackgroundColor;
+        }
 
         EditorUtility.SetDirty(level);
         AssetDatabase.SaveAssets();
@@ -422,15 +431,20 @@ public class LevelSaverEditor : EditorWindow
 
         Debug.Log("Level loaded.");
 
+        startPosValue = 0;
+        nextLevelValue = 0;
+
         foreach (var obj in data.Tools)
         {
-            if (obj.ToolPrefab.tag== "PlayerStartPos")
+            string prefabTag = obj.ToolPrefab != null ? obj.ToolPrefab.tag : "Untagged";
+
+            if (prefabTag == "PlayerStartPos")
             {
-                startPosValue += 1;
+                startPosValue++;
             }
-            else if(obj.ToolPrefab.tag=="NextLevel")
+            else if (prefabTag == "NextLevel")
             {
-                nextLevelValue += 1;
+                nextLevelValue++;
             }
         }
 
@@ -559,6 +573,7 @@ public class LevelSaverEditor : EditorWindow
         newLevel.Background.PlayerBackgroundColor = playerBackgroundColor;
 
         startPosValue = 0;
+        nextLevelValue = 0;
 
         foreach (var obj in allObjects)
         {

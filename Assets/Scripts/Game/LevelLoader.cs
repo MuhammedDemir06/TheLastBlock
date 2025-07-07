@@ -68,6 +68,9 @@ public class LevelLoader : MonoBehaviour
             {
                 player.position = newTool.transform.position;
                 hasPlayerStartPos = true;
+                player.gameObject.SetActive(true);
+                playerLit.SetActive(true);
+                player.GetComponent<PlayerController>().StartPos = newTool.transform.position;
             }
         }
 
@@ -75,11 +78,6 @@ public class LevelLoader : MonoBehaviour
         {
             playerLit.SetActive(false);
             Debug.LogError("Player Start Position Not Found!");
-        }
-        else
-        {
-            player.gameObject.SetActive(true);
-            playerLit.SetActive(true);
         }
 
         int tileWidth = maxX - minX + 1;
@@ -90,9 +88,8 @@ public class LevelLoader : MonoBehaviour
         playerBackgroundColor.transform.position = center;
         playerBackgroundColor.transform.localScale = new Vector3(tileWidth, tileHeight, 1f);
 
-        int marginX = 8;
+        int marginX = 10;
         int marginY = 4;
-
         minX -= marginX;
         maxX += marginX;
         minY -= marginY;
