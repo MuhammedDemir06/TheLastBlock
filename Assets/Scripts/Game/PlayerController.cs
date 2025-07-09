@@ -58,41 +58,18 @@ public class PlayerController : MonoBehaviour,SetablePlayerPos
         if (IsGrounded())
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            //sound
+            SettingsUI.Instance.PlaySFX(SettingsUI.Instance.GameSoundData.PlayerJumpSound);
         }
     }
     public bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
-    //public void KillEffect(int healthAmount,int damage,bool isDamage)
-    //{
-    //    if(healthAmount==0)
-    //    {
-    //        gameObject.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
-    //        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-    //        if (sr != null)
-    //            sr.DOFade(0f, 0.5f);
-    //    }
-    //    else
-    //    {
-    //        playerEffect.emitting = false;
-    //        rb.simulated = false;
-
-    //        Invoke(nameof(PlayerEffect), 1f);
-
-    //        if (lastPos.x != 0 && lastPos.y != 0)
-    //        {
-    //            transform.position = lastPos;
-    //        }
-    //        else
-    //        {
-    //            transform.localPosition = StartPos;
-    //        }
-    //    }
-    //}
-
     public void KillEffect(int healthAmount, int damage, bool isDamage)
     {
+        PlayerCamera.Instance.Shake(.8f,.6f,10);
+
         if (healthAmount == 0)
         {
             gameObject.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack);
@@ -102,21 +79,18 @@ public class PlayerController : MonoBehaviour,SetablePlayerPos
         }
         else
         {
-           // playerEffect.emitting = false;
             rb.simulated = false;
-
-           // Invoke(nameof(PlayerEffect), 1f);
 
             Vector2 targetPos = (lastPos.x != 0 && lastPos.y != 0) ? lastPos : StartPos;
 
-            // Rigidbody physics bozulmasın diye önce simülasyonu kapat
             transform.DOMove(targetPos, 0.5f)
                 .SetEase(Ease.OutBack)
                 .OnComplete(() =>
                 {
-                    // Animasyon tamamlanınca Rigidbody tekrar aktif
                     rb.simulated = true;
                 });
+
+            SettingsUI.Instance.PlaySFX(SettingsUI.Instance.GameSoundData.PlayerHitSound);
         }
     }
     public void PlayerSetPos(float x, float y)

@@ -38,6 +38,23 @@ public class SceneTransitionManager : MonoBehaviour
 
         Invoke(nameof(DisableFadeImage), fadeDuration);
     }
+    public void GameQuit()
+    {
+        canvasGameObject.SetActive(true);
+
+        fadeImage.color = new Color(0, 0, 0, 0);
+        loadingImage.color = new Color(1, 1, 1, 0);
+
+        fadeImage.DOFade(1f, fadeDuration);
+        loadingImage.DOFade(1f, fadeDuration * 0.75f);
+
+        Invoke(nameof(Quit), fadeDuration + 1);
+    }
+    private void Quit()
+    {
+        Application.Quit();
+        Debug.Log("Quited");
+    }
     public void LoadScene(string sceneName)
     {
         StartCoroutine(DoTransition(sceneName));

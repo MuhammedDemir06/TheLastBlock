@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -18,8 +18,6 @@ public class ToolInfo
 public class BackgroundInfo
 {
     public Sprite BackgroundSprite;
-
-    public Color PlayerBackgroundColor;
 }
 public class LevelData : ScriptableObject
 {

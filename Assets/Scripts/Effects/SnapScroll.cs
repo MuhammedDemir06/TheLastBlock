@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +11,7 @@ public class SnapScroll : MonoBehaviour
     [SerializeField] private int currentIndex = 0;
 
     private List<RectTransform> chapterPanels = new();
-
-    private void Start()
+    public void Snap()
     {
         foreach (Transform child in content)
             chapterPanels.Add(child as RectTransform);

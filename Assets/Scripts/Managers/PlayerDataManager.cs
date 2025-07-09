@@ -1,12 +1,22 @@
 using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 
+[System.Serializable]
+public class NewChapter
+{
+    public string ChapterName;
+    public int LevelInChapter;
+}
 [System.Serializable]
 public class PlayerData
 {
     [Header("Game")]
     public int CurrentLevel;
     public int DesiredLevel;
+    public string ChapterName;
+    [Header("Chapter")]
+    public List<NewChapter> Chapter;
     [Header("Settings")]
     public float GameSound;
 }
@@ -54,6 +64,7 @@ public class PlayerDataManager : MonoBehaviour
             CurrentLevel = 1,
             DesiredLevel = 0,
             GameSound = 40,
+            ChapterName = "First"
         };
 
         string json = JsonUtility.ToJson(newPlayerData, true);

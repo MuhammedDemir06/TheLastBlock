@@ -28,7 +28,6 @@ public class LevelSaverEditor : EditorWindow
 
     //Background
     private bool changeBackground;
-    private Color playerBackgroundColor = new Color(173, 143, 102, 148);
     private Sprite backgroundSprite;
 
     private int startPosValue;
@@ -145,9 +144,6 @@ public class LevelSaverEditor : EditorWindow
         {
             GUILayout.Label("Background Sprite:", GUILayout.Width(150));
             backgroundSprite = (Sprite)EditorGUILayout.ObjectField(backgroundSprite, typeof(Sprite), false, GUILayout.Width(50), GUILayout.Height(50));
-            EditorGUILayout.Space(20);
-            GUILayout.Label("Player Background Color:", GUILayout.Width(150));
-            playerBackgroundColor = EditorGUILayout.ColorField(playerBackgroundColor, GUILayout.Width(150), GUILayout.Height(30));
         }
     }
     //-----Editor Enemies
@@ -280,6 +276,7 @@ public class LevelSaverEditor : EditorWindow
 
                         ResetLevelData();
                         lastLevel = 0;
+
                         Debug.Log("New chapter folder created: " + newChapterPath);
                     }
                     else
@@ -368,7 +365,6 @@ public class LevelSaverEditor : EditorWindow
         if (changeBackground)
         {
             level.Background.BackgroundSprite = backgroundSprite;
-            level.Background.PlayerBackgroundColor = playerBackgroundColor;
         }
 
         EditorUtility.SetDirty(level);
@@ -570,7 +566,6 @@ public class LevelSaverEditor : EditorWindow
         newLevel.Background = new BackgroundInfo();
 
         newLevel.Background.BackgroundSprite = backgroundSprite;
-        newLevel.Background.PlayerBackgroundColor = playerBackgroundColor;
 
         startPosValue = 0;
         nextLevelValue = 0;
@@ -596,14 +591,20 @@ public class LevelSaverEditor : EditorWindow
         lastLevel += 1;
         EditorPrefs.SetInt("MyGame_LastLevel", lastLevel);
 
-        string folderPath = "Assets/Resources/Levels";
-        if (!AssetDatabase.IsValidFolder(folderPath))
+        string baseFolderPath = "Assets/Resources/Levels";
+
+        string chapterFolderPath = Path.Combine(baseFolderPath, chapterName);
+
+        if (!AssetDatabase.IsValidFolder(chapterFolderPath))
         {
-            AssetDatabase.CreateFolder("Assets/Resources", "Levels");
+            AssetDatabase.CreateFolder(baseFolderPath, chapterName);
         }
 
-        string path = AssetDatabase.GenerateUniqueAssetPath(folderPath + "/Level_" + lastLevel + ".asset");
-        AssetDatabase.CreateAsset(newLevel, path);
+        string assetPath = AssetDatabase.GenerateUniqueAssetPath(chapterFolderPath + "/Level_" + lastLevel + ".asset");
+
+        AssetDatabase.CreateAsset(newLevel, assetPath);
         AssetDatabase.SaveAssets();
+
+        Debug.Log("Level saved to: " + assetPath);
     }
 }

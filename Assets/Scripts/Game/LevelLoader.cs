@@ -1,37 +1,50 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-
 public class LevelLoader : MonoBehaviour
 {
     [Header("Tilemap")]
     [SerializeField] private Tilemap tilemap;
     [SerializeField] private Transform gameParent;
-    [SerializeField] private LevelData levelData;
     [Header("Background")]
     [SerializeField] private SpriteRenderer backgroundSprite;
-    [SerializeField] private SpriteRenderer playerBackgroundColor;
     [Header("Player")]
     [SerializeField] private Transform player;
     [SerializeField] private GameObject playerLit;
     private void Start()
     {
-        playerBackgroundColor.gameObject.SetActive(true);
         backgroundSprite.gameObject.SetActive(true);
         Init();
     }
     private void Init()
     {
-        Dictionary<string, TileBase> tileDict = new Dictionary<string, TileBase>();
-
-        foreach (var t in Resources.LoadAll<TileBase>("Tileset Palette/TP Ground"))
-        {
-            tileDict[t.name] = t;
-        }
-
-        LoadLevel(levelData, tilemap, tileDict);
+        LoadLevel();
     }
-    public void LoadLevel(LevelData levelData, Tilemap targetTilemap, Dictionary<string, TileBase> tileLookup)
+    private void LoadLevel()
+    {
+        string chapterName = PlayerDataManager.Instance.CurrentPlayerData.ChapterName;
+        LevelData[] levels = Resources.LoadAll<LevelData>($"Levels/{chapterName}");
+
+        if (levels.Length != 0)
+        {
+
+            var levelData = levels[PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel - 1];
+
+            Dictionary<string, TileBase> tileDict = new Dictionary<string, TileBase>();
+
+            foreach (var t in Resources.LoadAll<TileBase>("Tileset Palette/TP Ground"))
+            {
+                tileDict[t.name] = t;
+            }
+
+            SetLevel(levelData, tilemap, tileDict);
+        }
+        else
+        {
+            Debug.LogError($"No levels found for chapter: {chapterName}");
+        }
+    }
+    public void SetLevel(LevelData levelData, Tilemap targetTilemap, Dictionary<string, TileBase> tileLookup)
     {
         targetTilemap.ClearAllTiles();
 
@@ -70,6 +83,7 @@ public class LevelLoader : MonoBehaviour
                 hasPlayerStartPos = true;
                 player.gameObject.SetActive(true);
                 playerLit.SetActive(true);
+                playerLit.transform.parent.gameObject.SetActive(true);
                 player.GetComponent<PlayerController>().StartPos = newTool.transform.position;
             }
         }
@@ -80,14 +94,6 @@ public class LevelLoader : MonoBehaviour
             Debug.LogError("Player Start Position Not Found!");
         }
 
-        int tileWidth = maxX - minX + 1;
-        int tileHeight = maxY - minY + 1;
-
-        Vector3 center = new Vector3(minX + tileWidth / 2f, minY + tileHeight / 2f, 10f);
-
-        playerBackgroundColor.transform.position = center;
-        playerBackgroundColor.transform.localScale = new Vector3(tileWidth, tileHeight, 1f);
-
         int marginX = 10;
         int marginY = 4;
         minX -= marginX;
@@ -95,8 +101,8 @@ public class LevelLoader : MonoBehaviour
         minY -= marginY;
         maxY += marginY;
 
-        tileWidth = maxX - minX + 1;
-        tileHeight = maxY - minY + 1;
+        int tileWidth = maxX - minX + 1;
+        int tileHeight = maxY - minY + 1;
 
         Vector3 centerPos = new Vector3(minX + tileWidth / 2f, minY + tileHeight / 2f, 10f);
 
@@ -104,8 +110,5 @@ public class LevelLoader : MonoBehaviour
         backgroundSprite.transform.localScale = new Vector3(tileWidth, tileHeight, 1f);
 
         backgroundSprite.sprite = levelData.Background.BackgroundSprite;
-        playerBackgroundColor.color = levelData.Background.PlayerBackgroundColor;
-
-
     }
 }

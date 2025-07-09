@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e1b28ac41f1f7d419ea13d3dcee7feb, type: 3}
+  m_Name: Sounds
+  m_EditorClassIdentifier: 
+  BackgroundMusic: {fileID: 8300000, guid: 238170e7c70cddc4d94128c437fc977e, type: 3}
+  LoseSound: {fileID: 8300000, guid: 6658442dc39db58478656472f97dd78b, type: 3}
+  ClickSound: {fileID: 8300000, guid: 35cf7766e9e2aa542811e896fde57989, type: 3}
+  PauseSound: {fileID: 8300000, guid: b83bf8726a7fac349a54389f0c57cda6, type: 3}
+  UnpauseSound: {fileID: 8300000, guid: e58d8bd078f188a4ba314e933b98528b, type: 3}
+  NextLevelSound: {fileID: 8300000, guid: cc2c76a3a5e521d4eb51a009554a0de0, type: 3}
+  PlayerJumpSound: {fileID: 8300000, guid: 4e349dc959014a845b9aa317d1c2b7f0, type: 3}
+  PlayerHitSound: {fileID: 8300000, guid: 8b23b175a78d6b5458322e3a6c9905d0, type: 3}
