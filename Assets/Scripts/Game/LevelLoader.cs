@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 public class LevelLoader : MonoBehaviour
@@ -22,28 +24,41 @@ public class LevelLoader : MonoBehaviour
     }
     private void LoadLevel()
     {
-        string chapterName = PlayerDataManager.Instance.CurrentPlayerData.ChapterName;
+        string chapterName = PlayerDataManager.Instance.CurrentPlayerData.CurrentChapter;
+        int desiredLevel = PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel;
+
+
         LevelData[] levels = Resources.LoadAll<LevelData>($"Levels/{chapterName}");
 
-        if (levels.Length != 0)
-        {
-
-            var levelData = levels[PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel - 1];
-
-            Dictionary<string, TileBase> tileDict = new Dictionary<string, TileBase>();
-
-            foreach (var t in Resources.LoadAll<TileBase>("Tileset Palette/TP Ground"))
-            {
-                tileDict[t.name] = t;
-            }
-
-            SetLevel(levelData, tilemap, tileDict);
-        }
-        else
+        if (levels.Length == 0)
         {
             Debug.LogError($"No levels found for chapter: {chapterName}");
+            return;
         }
+
+        var sortedLevels = levels.OrderBy(lv =>
+        {
+            Match match = Regex.Match(lv.name, @"\d+");
+            return match.Success ? int.Parse(match.Value) : 0;
+        }).ToArray();
+        if (desiredLevel <= 0 || desiredLevel > sortedLevels.Length)
+        {
+            Debug.LogError($"Invalid desired level: {desiredLevel} in chapter: {chapterName}");
+            return;
+        }
+
+        LevelData selectedLevel = sortedLevels[desiredLevel - 1];
+
+        Dictionary<string, TileBase> tileDict = new Dictionary<string, TileBase>();
+
+        foreach (var t in Resources.LoadAll<TileBase>("Tileset Palette/TP Ground"))
+        {
+            tileDict[t.name] = t;
+        }
+
+        SetLevel(selectedLevel, tilemap, tileDict);
     }
+
     public void SetLevel(LevelData levelData, Tilemap targetTilemap, Dictionary<string, TileBase> tileLookup)
     {
         targetTilemap.ClearAllTiles();

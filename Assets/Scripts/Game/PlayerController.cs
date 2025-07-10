@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour,SetablePlayerPos
     [SerializeField] private LayerMask groundLayer;
     [Header("Player Size")]
     [SerializeField] private float playerSize = .5f;
-    private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
 
     //Last Pos
     [HideInInspector] public Vector2 StartPos;
@@ -31,10 +31,6 @@ public class PlayerController : MonoBehaviour,SetablePlayerPos
         GameInputManager.PlayerInputX -= Move;
         GameInputManager.PlayerJump -= Jump;
         PlayerHealth.DamageControl -= KillEffect;
-    }
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
     }
     private void Move(float input)
     {

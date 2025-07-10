@@ -19,6 +19,8 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField] private SnapScroll snapManager;
     [Header("Next Scene Name")]
     [SerializeField] private string nextScene;
+
+    private int chapterCount;
     private void Start()
     {
         Init();
@@ -39,24 +41,35 @@ public class MenuUIManager : MonoBehaviour
             return;
         }
 
-        string[] chapterFolders = Directory.GetDirectories(path);
+        string[] chapterFolders = Directory.GetDirectories(path)
+    .OrderBy(folder =>
+    {
+        string folderName = Path.GetFileName(folder);
+        string[] parts = folderName.Split('_');
+        return parts.Length > 1 && int.TryParse(parts[0], out int num) ? num : int.MaxValue;
+    }).ToArray();
 
         foreach (string folder in chapterFolders)
         {
-            string chapterName = Path.GetFileName(folder);
+            string chapterFolderName = Path.GetFileName(folder);
+
+            string[] parts = chapterFolderName.Split('_');
+            string chapterDisplayName = parts.Length > 1 ? parts[1] : chapterFolderName;
 
             GameObject newChapter = Instantiate(chapterPrefab, chaptersLayout);
 
             Transform levelsParent = newChapter.transform.Find("Levels Layout");
             Transform lockParent = newChapter.transform.Find("Chapter Title");
-            
-            lockParent.GetComponentInChildren<TextMeshProUGUI>().text = chapterName;
 
-            LoadLevels(chapterName,levelsParent);
+            lockParent.GetComponentInChildren<TextMeshProUGUI>().text = chapterDisplayName;
+
+            LoadLevels(chapterFolderName, levelsParent,chapterCount);
+
+            chapterCount += 1;
         }
         ResizeChapterUI(chapterFolders.Length);
     }
-    private void LoadLevels(string chapterName,Transform contentParent)
+    private void LoadLevels(string chapterName,Transform contentParent,int chapterCount)
     {
         LevelData[] allLevels = Resources.LoadAll<LevelData>($"Levels/{chapterName}");
 
@@ -71,7 +84,7 @@ public class MenuUIManager : MonoBehaviour
             GameObject newLevel = Instantiate(levelButtonPrefab, contentParent);
             int levelIndex = i + 1;
 
-            if (i < PlayerDataManager.Instance.CurrentPlayerData.CurrentLevel)
+            if (i < PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[chapterCount].UnlockedLevelCount)
             {
                 newLevel.GetComponentInChildren<TextMeshProUGUI>().text = levelIndex.ToString();
 
@@ -101,7 +114,7 @@ public class MenuUIManager : MonoBehaviour
     }
     public void LevelButton(int levelIndex,string chapterName)
     {
-        PlayerDataManager.Instance.CurrentPlayerData.ChapterName = chapterName;
+        PlayerDataManager.Instance.CurrentPlayerData.CurrentChapter = chapterName;
         PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel = levelIndex;
         PlayerDataManager.Instance.SaveData();
 

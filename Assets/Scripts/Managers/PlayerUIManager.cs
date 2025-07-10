@@ -64,25 +64,55 @@ public class PlayerUIManager : MonoBehaviour
         }
     }
 
+    private bool newChapterActive;
     public void NextLevel()
     {
         GameFinished = true;
         GamePaused = true;
         nextLevelScreen.Show();
 
-        if (PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel == PlayerDataManager.Instance.CurrentPlayerData.CurrentLevel)
-            PlayerDataManager.Instance.CurrentPlayerData.CurrentLevel += 1;
+        if (PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel == PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount)
+        {
+            PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount += 1;
+
+            Debug.Log("New Level Activated");
+        }
+
+        if (PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount - 1 == PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].MaxLevelCount)
+        {
+            PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount += 1;
+            PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount += 1;
+
+            newChapterActive = true;
+
+            Debug.Log("New Chapter Activated");
+        }
+
 
         PlayerDataManager.Instance.SaveData();
 
         SettingsUI.Instance.PlaySFX(SettingsUI.Instance.GameSoundData.NextLevelSound);
     }
+    private bool nextLevelButtonClick = false;
     //Buttons
     public void NextLevelButton()
     {
-        PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel += 1;
+        if(!nextLevelButtonClick)
+        {
+            if (newChapterActive)
+            {
+                PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel = PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount;
+                PlayerDataManager.Instance.CurrentPlayerData.CurrentChapter = PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].ChapterName;
+            }
+            else
+            {
+                PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel += 1;
+            }
 
-        PlayerDataManager.Instance.SaveData();
+            PlayerDataManager.Instance.SaveData();
+        }
+
+        nextLevelButtonClick = true;
     }
     public void PauseButton()
     {

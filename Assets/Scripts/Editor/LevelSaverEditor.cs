@@ -3,8 +3,8 @@ using UnityEditor;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using System.Linq;
 using System.IO;
+using UnityEditor.SceneManagement;
 public class LevelSaverEditor : EditorWindow
 {
     private Tilemap tilemap;
@@ -23,8 +23,6 @@ public class LevelSaverEditor : EditorWindow
     private bool showEnemies;
 
     private bool showPlatforms;
-
-    private int lastLevel;
 
     //Background
     private bool changeBackground;
@@ -54,11 +52,21 @@ public class LevelSaverEditor : EditorWindow
     }
     private void OnEnable()
     {
-        lastLevel = EditorPrefs.GetInt("MyGame_LastLevel", 0);
-        chapterName = EditorPrefs.GetString("MyGame_LastChapterName");
+        var newChapterName = EditorPrefs.GetString("MyGame_LastChapterName");
+        string[] parts = newChapterName.Split('_');
+        string realName = parts.Length > 1 ? parts[1] : newChapterName;
+        chapterName = realName;
     }
     private void OnGUI()
     {
+        string currentSceneName = EditorSceneManager.GetActiveScene().name;
+
+        if (currentSceneName != "Game")
+        {
+            EditorGUILayout.HelpBox("This panel is only available when you are in the 'Game' scene.", MessageType.Warning);
+            return;
+        }
+
         ShowTitle();
 
         scrollPositionTools = EditorGUILayout.BeginScrollView(scrollPositionTools, GUILayout.Height(800));
@@ -67,16 +75,15 @@ public class LevelSaverEditor : EditorWindow
 
         tilemap = (Tilemap)EditorGUILayout.ObjectField("Tilemap", tilemap, typeof(Tilemap), true);
 
-        //Edit Mode
         GUILayout.Space(10);
         EditMode();
-        //Clear Button
+
         GUILayout.Space(10);
         ClearLevel();
-        //Reset Data
+
         GUILayout.Space(10);
         ResetData();
-        //Tools
+
         Tools();
 
         EditorGUILayout.EndScrollView();
@@ -257,40 +264,71 @@ public class LevelSaverEditor : EditorWindow
         }
         else
         {
-            GUILayout.Label("An Existing Chapther Or New Chapter Name", EditorStyles.boldLabel);
+            GUILayout.Label("An Existing Chapter Or New Chapter Name", EditorStyles.boldLabel);
             chapterName = EditorGUILayout.TextField("Chapter Name:", chapterName);
             GUILayout.Space(10);
 
             if (GUILayout.Button("Create Or Open New Chapter"))
             {
+                newChapter = true;
+
                 if (!string.IsNullOrEmpty(chapterName))
                 {
                     string levelsRoot = "Assets/Resources/Levels";
-                    string newChapterPath = Path.Combine(levelsRoot, chapterName);
-
-                    if (!AssetDatabase.IsValidFolder(newChapterPath))
+                    if (!AssetDatabase.IsValidFolder(levelsRoot))
                     {
-                        AssetDatabase.CreateFolder(levelsRoot, chapterName);
+                        AssetDatabase.CreateFolder("Assets/Resources", "Levels");
+                    }
 
-                        EditorPrefs.SetString("MyGame_LastChapterName", chapterName);
+                    string[] existingFolders = AssetDatabase.GetSubFolders(levelsRoot);
+                    string matchedFolderName = null;
+                    int maxIndex = -1;
 
-                        ResetLevelData();
-                        lastLevel = 0;
+                    foreach (var folder in existingFolders)
+                    {
+                        string folderName = Path.GetFileName(folder);
+                        string[] parts = folderName.Split('_');
+                        if (parts.Length >= 2)
+                        {
+                            string folderRealName = parts[1];
+                            if (folderRealName.Equals(chapterName, System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                matchedFolderName = folderName;
+                                break;
+                            }
 
-                        Debug.Log("New chapter folder created: " + newChapterPath);
+                            if (int.TryParse(parts[0], out int index))
+                            {
+                                if (index > maxIndex)
+                                    maxIndex = index;
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(matchedFolderName))
+                    {
+                        Debug.Log("Chapter folder already exists: " + matchedFolderName);
+                        EditorPrefs.SetString("MyGame_LastChapterName", matchedFolderName);
                     }
                     else
                     {
-                        Debug.Log("Chapter folder already exists: " + newChapterPath);
-                    }
+                        int newIndex = maxIndex + 1;
+                        string numberedChapterName = $"{newIndex.ToString("D2")}_{chapterName}";
+                        string newChapterPath = Path.Combine(levelsRoot, numberedChapterName);
 
-                    newChapter = true;
+                        AssetDatabase.CreateFolder(levelsRoot, numberedChapterName);
+
+                        EditorPrefs.SetString("MyGame_LastChapterName", numberedChapterName);
+
+                        Debug.Log("New chapter folder created: " + newChapterPath);
+                    }
                 }
                 else
                 {
                     Debug.LogError("Please Fill Chapter Name Area");
                 }
             }
+
 
             if (newChapter)
             {
@@ -490,8 +528,6 @@ public class LevelSaverEditor : EditorWindow
     {
         GUILayout.Space(20);
 
-        lastLevel = EditorGUILayout.IntField("Last Level", lastLevel);
-
         GUILayout.Label("Advanced", EditorStyles.boldLabel);
 
         if (GUILayout.Button("🔁 Reset Last Level (EditorPrefs)", GUILayout.Height(25)))
@@ -502,20 +538,16 @@ public class LevelSaverEditor : EditorWindow
                 "Yes, reset it",
                 "Cancel"))
             {
-                ResetLevelData();
                 ResetChapterData();
+
                 Debug.Log("Last Level reset.");
             }
         }
     }
-    private void ResetLevelData()
-    {
-        EditorPrefs.DeleteKey("MyGame_LastLevel");
-        lastLevel = 0;
-    }
     private void ResetChapterData()
     {
         EditorPrefs.DeleteKey("MyGame_LastChapterName");
+        EditorPrefs.DeleteKey("MyGame_ChapterCount");
     }
     //---- Editor Save Level
     private void SaveNewLevel()
@@ -588,23 +620,31 @@ public class LevelSaverEditor : EditorWindow
             return;
         }
 
-        lastLevel += 1;
-        EditorPrefs.SetInt("MyGame_LastLevel", lastLevel);
-
         string baseFolderPath = "Assets/Resources/Levels";
 
-        string chapterFolderPath = Path.Combine(baseFolderPath, chapterName);
+        string numberedChapterName = EditorPrefs.GetString("MyGame_LastChapterName");
+
+        if (string.IsNullOrEmpty(numberedChapterName))
+        {
+            Debug.LogError("No chapter selected or created!");
+            return;
+        }
+
+        string chapterFolderPath = Path.Combine(baseFolderPath, numberedChapterName);
 
         if (!AssetDatabase.IsValidFolder(chapterFolderPath))
         {
-            AssetDatabase.CreateFolder(baseFolderPath, chapterName);
+            AssetDatabase.CreateFolder(baseFolderPath, numberedChapterName);
         }
 
-        string assetPath = AssetDatabase.GenerateUniqueAssetPath(chapterFolderPath + "/Level_" + lastLevel + ".asset");
+        string[] levelFiles = Directory.GetFiles(chapterFolderPath, "Level_*.asset");
+        int newLevelIndex = levelFiles.Length + 1;
+
+        string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{chapterFolderPath}/Level_{newLevelIndex}.asset");
 
         AssetDatabase.CreateAsset(newLevel, assetPath);
         AssetDatabase.SaveAssets();
 
-        Debug.Log("Level saved to: " + assetPath);
+        Debug.Log($"Level saved to: {assetPath}");
     }
 }

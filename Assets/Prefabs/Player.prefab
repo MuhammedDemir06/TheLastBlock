@@ -5409,6 +5409,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   playerSize: 0.5
+  rb: {fileID: 5049833586025506579}
   StartPos: {x: 0, y: 0}
 --- !u!114 &112367041974911399
 MonoBehaviour:

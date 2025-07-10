@@ -1,22 +1,27 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 [System.Serializable]
-public class NewChapter
+public class ChapterProgress
 {
     public string ChapterName;
-    public int LevelInChapter;
+    public int UnlockedLevelCount;
+    public int MaxLevelCount;
 }
+
 [System.Serializable]
 public class PlayerData
 {
-    [Header("Game")]
-    public int CurrentLevel;
+    [Header("Game Progress")]
+    public string CurrentChapter;
     public int DesiredLevel;
-    public string ChapterName;
-    [Header("Chapter")]
-    public List<NewChapter> Chapter;
+    public int ActiveChapterCount;
+
+    public List<ChapterProgress> AllChapterProgress = new();
+
     [Header("Settings")]
     public float GameSound;
 }
@@ -61,11 +66,47 @@ public class PlayerDataManager : MonoBehaviour
     {
         PlayerData newPlayerData = new PlayerData
         {
-            CurrentLevel = 1,
+            ActiveChapterCount = 0,
             DesiredLevel = 0,
             GameSound = 40,
-            ChapterName = "First"
+            AllChapterProgress = new List<ChapterProgress>()
         };
+
+        string levelsPath = Path.Combine(Application.dataPath, "Resources/Levels");
+
+        if (Directory.Exists(levelsPath))
+        {
+            string[] chapterFolders = Directory.GetDirectories(levelsPath);
+
+            var sortedChapters = chapterFolders.OrderBy(folder =>
+            {
+                string folderName = Path.GetFileName(folder);
+                Match match = Regex.Match(folderName, @"\d+");
+                return match.Success ? int.Parse(match.Value) : int.MaxValue;
+            });
+
+            foreach (string folder in sortedChapters)
+            {
+                string chapterName = Path.GetFileName(folder);
+
+                // Chapter içindeki Level sayısını bul
+                string[] levelFiles = Directory.GetFiles(folder, "*.asset");
+                int levelCount = levelFiles.Length;
+
+                int unlockedLevel = newPlayerData.AllChapterProgress.Count == 0 ? 1 : 0;
+
+                newPlayerData.AllChapterProgress.Add(new ChapterProgress
+                {
+                    ChapterName = chapterName,
+                    UnlockedLevelCount = unlockedLevel,
+                    MaxLevelCount = levelCount
+                });
+            }
+
+            // Başlangıç chapter’ını ilk sıraya al
+            if (newPlayerData.AllChapterProgress.Count > 0)
+                newPlayerData.CurrentChapter = newPlayerData.AllChapterProgress[0].ChapterName;
+        }
 
         string json = JsonUtility.ToJson(newPlayerData, true);
         File.WriteAllText(filePath, json);
