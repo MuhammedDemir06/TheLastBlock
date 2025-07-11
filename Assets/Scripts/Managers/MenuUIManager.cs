@@ -89,7 +89,7 @@ public class MenuUIManager : MonoBehaviour
                 newLevel.GetComponentInChildren<TextMeshProUGUI>().text = levelIndex.ToString();
 
                 int capturedIndex = levelIndex;
-                newLevel.GetComponent<Button>().onClick.AddListener(() => LevelButton(capturedIndex,chapterName));
+                newLevel.GetComponent<Button>().onClick.AddListener(() => LevelButton(capturedIndex, chapterName, chapterCount));
             }
             else
             {
@@ -112,10 +112,13 @@ public class MenuUIManager : MonoBehaviour
 
         snapManager.Snap(); //Update Snap
     }
-    public void LevelButton(int levelIndex,string chapterName)
+    public void LevelButton(int levelIndex,string chapterName,int desiredChapter)
     {
         PlayerDataManager.Instance.CurrentPlayerData.CurrentChapter = chapterName;
         PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel = levelIndex;
+
+        PlayerDataManager.Instance.CurrentPlayerData.DesiredChapter = desiredChapter;
+
         PlayerDataManager.Instance.SaveData();
 
         SettingsUI.Instance.PlaySFX(SettingsUI.Instance.GameSoundData.ClickSound);

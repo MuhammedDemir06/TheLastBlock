@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     [UnityEditor.MenuItem("Tools/Game/How To Create Level And The Last Block Gameplay ?")]
     public static void OperTutorialURL()
     {
-        Application.OpenURL("");
+        Application.OpenURL("https://www.youtube.com/watch?v=IIXfBZR0km8&t=103s");
     }
 #endif
 }

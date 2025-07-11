@@ -4,6 +4,12 @@ public class SetPlayerPos : MonoBehaviour
 {
     [SerializeField] private GameObject activeEffect;
     private bool isActive;
+
+    private void Start()
+    {
+        activeEffect.SetActive(false);
+        isActive = false;
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         var newPos = collision.GetComponent<SetablePlayerPos>();

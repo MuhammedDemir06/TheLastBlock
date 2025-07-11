@@ -71,23 +71,26 @@ public class PlayerUIManager : MonoBehaviour
         GamePaused = true;
         nextLevelScreen.Show();
 
-        if (PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel == PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount)
+        var data = PlayerDataManager.Instance.CurrentPlayerData;
+
+        if (data.DesiredLevel == data.AllChapterProgress[data.ActiveChapterCount].UnlockedLevelCount)
         {
-            PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount += 1;
+            data.AllChapterProgress[data.ActiveChapterCount].UnlockedLevelCount += 1;
 
             Debug.Log("New Level Activated");
         }
 
-        if (PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount - 1 == PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].MaxLevelCount)
+        if (data.AllChapterProgress[data.ActiveChapterCount].UnlockedLevelCount - 1 == data.AllChapterProgress[data.ActiveChapterCount].MaxLevelCount && data.AllChapterProgress[data.DesiredChapter + 1].UnlockedLevelCount == 0)
         {
-            PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount += 1;
-            PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount += 1;
+            data.ActiveChapterCount += 1;
+            data.AllChapterProgress[data.ActiveChapterCount].UnlockedLevelCount += 1;
 
             newChapterActive = true;
 
             Debug.Log("New Chapter Activated");
         }
 
+        PlayerDataManager.Instance.CurrentPlayerData = data;
 
         PlayerDataManager.Instance.SaveData();
 
@@ -99,15 +102,28 @@ public class PlayerUIManager : MonoBehaviour
     {
         if(!nextLevelButtonClick)
         {
+            var data = PlayerDataManager.Instance.CurrentPlayerData;
+
             if (newChapterActive)
             {
-                PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel = PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].UnlockedLevelCount;
-                PlayerDataManager.Instance.CurrentPlayerData.CurrentChapter = PlayerDataManager.Instance.CurrentPlayerData.AllChapterProgress[PlayerDataManager.Instance.CurrentPlayerData.ActiveChapterCount].ChapterName;
+                data.DesiredLevel = data.AllChapterProgress[data.ActiveChapterCount].UnlockedLevelCount;
+                data.CurrentChapter = data.AllChapterProgress[data.ActiveChapterCount].ChapterName;
+            }
+            else if (data.DesiredLevel == data.AllChapterProgress[data.DesiredChapter].MaxLevelCount)
+            {
+                data.DesiredChapter += 1;
+
+                data.CurrentChapter = data.AllChapterProgress[data.DesiredChapter].ChapterName;
+
+                data.DesiredLevel = 1;
+                Debug.Log("Skipped New Chapter " + data.CurrentChapter);
             }
             else
             {
-                PlayerDataManager.Instance.CurrentPlayerData.DesiredLevel += 1;
+                data.DesiredLevel += 1;
             }
+
+            PlayerDataManager.Instance.CurrentPlayerData = data;
 
             PlayerDataManager.Instance.SaveData();
         }

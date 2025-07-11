@@ -834,8 +834,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1986622922}
   - {fileID: 997098578}
+  - {fileID: 1986622922}
   - {fileID: 523695489}
   m_Father: {fileID: 503875310}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1803,6 +1803,7 @@ MonoBehaviour:
   target: {fileID: 0}
   smoothSpeed: 0.12
   offset: {x: 0, y: 0, z: -10}
+  cameraHolder: {fileID: 0}
 --- !u!1 &523695488
 GameObject:
   m_ObjectHideFlags: 0

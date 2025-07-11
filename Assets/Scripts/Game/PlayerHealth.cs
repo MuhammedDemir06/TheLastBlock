@@ -14,6 +14,9 @@ public class PlayerHealth : MonoBehaviour,IDamageable
 
         playerHealthAmount -= damage;
 
+        if (playerHealthAmount <= 0)
+            playerHealthAmount = 0;
+
         DamageControl?.Invoke(playerHealthAmount, damage, true);
      //   PlayerUIManager.Instance.DamageControl(playerHealthAmount, damage, true);
     }

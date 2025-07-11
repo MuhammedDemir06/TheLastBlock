@@ -18,6 +18,7 @@ public class PlayerData
     [Header("Game Progress")]
     public string CurrentChapter;
     public int DesiredLevel;
+    public int DesiredChapter;
     public int ActiveChapterCount;
 
     public List<ChapterProgress> AllChapterProgress = new();
@@ -66,6 +67,7 @@ public class PlayerDataManager : MonoBehaviour
     {
         PlayerData newPlayerData = new PlayerData
         {
+            DesiredChapter = 0,
             ActiveChapterCount = 0,
             DesiredLevel = 0,
             GameSound = 40,
